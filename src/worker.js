@@ -144,6 +144,12 @@ function landingPage(origin) {
      "Every rule cites a real source — OWASP (incl. the LLM Top 10), CWE identifiers, and regulations like the EU AI Act, PCI-DSS, and HIPAA."],
     ["What's the difference between Free and paid?",
      "Free grounds (advisory: the agent knows the baseline and cites it). The paid Kernora Axiora Integrity Plane is the product that blocks agent actions contradicting your organization's own verified decisions and produces a tamper-evident, cited audit ledger for compliance evidence. It's sold separately — contact us."],
+    ["How do I see every rule that's served?",
+     "All of them are public and inspectable: the readable list at " + host + "/rules, the raw " + host + "/baseline.json (or .yaml), and the get_security_baseline MCP tool. Nothing is hidden — it's a security tool, so you should be able to read exactly what it tells your agent."],
+    ["How effective is it, and is there reporting?",
+     "The free tier is stateless and private — we store nothing, so there's no per-user tracking. The optional Claude Code plugin logs flags LOCALLY on your machine; run /agentsec-report to see how many risky actions it caught in your own sessions. Full per-action reporting with a tamper-evident audit ledger is the paid Axiora plane."],
+    ["How do I remove it?",
+     "Claude Code: `claude mcp remove agentsec` (or delete it from your .mcp.json), and `/plugin uninstall kernora-agent-security` if you installed the plugin. Cursor: delete the agentsec entry from ~/.cursor/mcp.json and restart. It leaves nothing behind — it's read-only and stores nothing."],
   ];
   const faqJsonLd = {
     "@context": "https://schema.org", "@type": "FAQPage",
@@ -272,17 +278,33 @@ footer{padding:44px 0 56px;color:var(--muted);font-size:.9em;border-top:1px soli
 </section>
 
 <section id="connect">
-  <h2>Connect it — one line</h2>
-  <p class="lede">Add Kernora Agent Security as an MCP server in Claude Code, Cursor, or any MCP-capable agent:</p>
+  <h2>Setup — under a minute</h2>
+  <p class="lede"><strong>Step 1 — add the server.</strong></p>
+
+  <p style="margin:.2em 0 .8em"><strong>Cursor:</strong>
+    <a class="cta" style="padding:8px 16px;margin-left:6px" href="cursor://anysphere.cursor-deeplink/mcp/install?name=agentsec&amp;config=eyJ1cmwiOiAiaHR0cHM6Ly9hZ2VudHNlYy5rZXJub3JhLmFpL21jcCIsICJ0eXBlIjogImh0dHAifQ==">Add to Cursor →</a>
+    <span class="note">— or add the JSON below to <code>~/.cursor/mcp.json</code> and restart Cursor.</span></p>
+
+  <p style="margin:1em 0 .3em"><strong>Claude Code</strong> — one command:</p>
+  <div class="codewrap">
+    <button class="copy" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('cli').textContent).then(()=>{this.textContent='copied'})">copy</button>
+    <pre id="cli">claude mcp add --transport http agentsec ${host}/mcp</pre>
+  </div>
+
+  <p style="margin:1em 0 .3em"><strong>Any MCP client</strong> — config:</p>
   <div class="codewrap">
     <button class="copy" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('cfg').textContent).then(()=>{this.textContent='copied'})">copy</button>
     <pre id="cfg">{
   "mcpServers": {
-    "agentsec": { "url": "${host}/mcp" }
+    "agentsec": { "type": "http", "url": "${host}/mcp" }
   }
 }</pre>
   </div>
-  <p class="note">Or read the baseline directly: <a href="/baseline.json">/baseline.json</a> · <a href="/baseline.yaml">/baseline.yaml</a> · <a href="/mcp">/mcp</a></p>
+
+  <p class="lede" style="margin-top:1.6em"><strong>Step 2 — tell your agent to use it.</strong> Connecting only makes the tools available; add one line to your <code>CLAUDE.md</code> or <code>.cursorrules</code> so it's automatic:</p>
+  <div class="card"><p style="color:var(--ink)">"Before running a shell command or writing code that handles secrets, deletes files, adds a dependency, weakens auth/TLS, or makes an outbound network call, call <code>agentsec.check_action</code> with the action and heed any cited rule."</p></div>
+
+  <p class="note">Prefer raw data? Read the baseline directly: <a href="/baseline.json">/baseline.json</a> · <a href="/baseline.yaml">/baseline.yaml</a> · <a href="/mcp">/mcp</a></p>
 </section>
 
 <section id="inside">
@@ -314,6 +336,7 @@ footer{padding:44px 0 56px;color:var(--muted);font-size:.9em;border-top:1px soli
     <div class="foot-col">
       <h3>Agent Security</h3>
       <a href="#connect">Connect</a>
+      <a href="/rules">All rules</a>
       <a href="/baseline.json">Baseline API</a>
       <a href="/mcp">MCP endpoint</a>
       <a href="mailto:${CONTACT}?subject=Kernora%20Axiora">Axiora (paid)</a>
@@ -334,10 +357,50 @@ footer{padding:44px 0 56px;color:var(--muted);font-size:.9em;border-top:1px soli
 </div></body></html>`;
 }
 
+function rulesPage() {
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const rows = BASELINE.map((f) =>
+    `<tr><td><span class="sev s-${f.severity}">${f.severity}</span></td>` +
+    `<td><div class="stmt">${esc(f.statement)}</div>` +
+    `<div class="meta"><code>${f.id}</code> · ${f.category.replace(/_/g, " ")} · ${f.sources.map(esc).join(" · ")}</div></td></tr>`
+  ).join("");
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rules — Kernora Agent Security</title>
+<meta name="description" content="Every security rule Kernora Agent Security serves to your AI coding agent, with severity and cited source.">
+<link rel="canonical" href="${CANONICAL}/rules">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--surface:#FDFBF7;--ink:#1A1614;--muted:#6B6258;--coral:#B85C3D;--border:#E6DFD3;--cream:#F5F1EB}
+body{margin:0;background:var(--surface);color:var(--ink);font:16px/1.6 'Inter',-apple-system,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px 64px}
+a{color:var(--coral)}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:2em;margin:.6em 0 .2em}
+.lede{color:var(--muted);margin:0 0 1.4em}
+table{border-collapse:collapse;width:100%}
+td{border-top:1px solid var(--border);padding:14px 8px;vertical-align:top}
+.stmt{font-size:.97em}
+.meta{color:var(--muted);font-size:.8em;margin-top:6px;font-family:'JetBrains Mono',monospace}
+.meta code{background:var(--cream);padding:.05em .35em;border-radius:4px}
+.sev{display:inline-block;font-size:.7em;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.s-critical{background:#f3d6cd;color:#94472D}.s-high{background:#f0e2c8;color:#8a6a1f}.s-medium{background:#e3e7d3;color:#5F6940}
+header{padding:22px 0;border-bottom:1px solid var(--border)}
+.brand{font-weight:700;color:var(--ink);text-decoration:none}.brand span{color:var(--coral)}
+</style></head><body><div class="wrap">
+<header><a class="brand" href="/">◎ kernora <span>/ Agent Security</span></a></header>
+<h1>Every rule we serve</h1>
+<p class="lede">These ${BASELINE.length} rules are exactly what your agent reads — nothing hidden. Raw data: <a href="/baseline.json">/baseline.json</a> · <a href="/baseline.yaml">/baseline.yaml</a>. Advisory only.</p>
+<table><tbody>${rows}</tbody></table>
+<p class="lede" style="margin-top:2em"><a href="/">← back</a></p>
+</div></body></html>`;
+}
+
 export default {
   async fetch(req) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+    if (url.pathname === "/rules") return new Response(rulesPage(), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache", ...CORS } });
     if (url.pathname === "/health") return json({ ok: true, version: BASELINE_VERSION, ...baselineStats() });
     if (url.pathname === "/baseline.json") return json({ version: BASELINE_VERSION, content: BASELINE });
     if (url.pathname === "/baseline.yaml")

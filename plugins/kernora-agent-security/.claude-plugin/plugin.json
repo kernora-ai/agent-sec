@@ -1,0 +1,13 @@
+{
+  "name": "kernora-agent-security",
+  "version": "0.1.0",
+  "description": "Grounds your AI coding agent in a cited security baseline (OWASP/CWE/EU AI Act) and warns before risky actions. Advisory, free, read-only. Real-time blocking is Kernora Axiora.",
+  "author": { "name": "Kernora", "url": "https://kernora.ai" },
+  "homepage": "https://agentsec.kernora.ai",
+  "repository": "https://github.com/kernora-ai/agent-sec",
+  "license": "Apache-2.0",
+  "keywords": ["security", "mcp", "ai-agents", "claude-code", "owasp"],
+  "mcpServers": {
+    "agentsec": { "type": "http", "url": "https://agentsec.kernora.ai/mcp" }
+  }
+}

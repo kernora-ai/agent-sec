@@ -74,6 +74,32 @@ complementary — this project can even export its rules for a monitor to enforc
 This endpoint provides **advisory grounding only**. A matched rule is guidance; an *unmatched* action
 is **not** an assurance of safety. Real-time enforcement and audit are the paid Integrity Plane.
 
+## Claude Code plugin (optional, one command)
+
+Instead of the manual MCP config, install the plugin — it bundles the MCP server, a skill that tells
+your agent to consult the baseline, an advisory PreToolUse hook (warns before risky commands), and
+helper commands:
+
+```
+/plugin marketplace add kernora-ai/agent-sec
+/plugin install kernora-agent-security
+```
+
+Commands: `/agentsec-rules` (show every rule), `/agentsec-check <action>`, `/agentsec-report` (a LOCAL
+view of how many risky actions it caught — nothing is sent to us). Disable the hook anytime with
+`AGENTSEC_HOOK=0`.
+
+## See every rule / how effective / how to remove
+
+- **See the rules:** readable at https://agentsec.kernora.ai/rules · raw at `/baseline.json` (or
+  `.yaml`) · or the `get_security_baseline` MCP tool. Nothing is hidden.
+- **Effectiveness / reporting:** the free tier is stateless and private — we store nothing. The plugin
+  logs flags LOCALLY (`~/.agentsec/flags.log`); `/agentsec-report` summarizes them. Full per-action
+  reporting with a tamper-evident audit ledger is the paid Kernora Axiora plane.
+- **Remove it:** Claude Code — `claude mcp remove agentsec` (+ `/plugin uninstall
+  kernora-agent-security` if installed). Cursor — delete the `agentsec` entry from
+  `~/.cursor/mcp.json` and restart. It's read-only and stores nothing, so nothing is left behind.
+
 ## About
 
 Kernora Agent Security is built by [Kernora](https://kernora.ai) on the open

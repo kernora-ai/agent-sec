@@ -1,0 +1,14 @@
+{
+  "name": "kernora",
+  "owner": { "name": "Kernora", "url": "https://kernora.ai" },
+  "metadata": { "description": "Kernora plugins for AI coding agents." },
+  "plugins": [
+    {
+      "name": "kernora-agent-security",
+      "source": "./plugins/kernora-agent-security",
+      "description": "A security baseline for your AI coding agent — cited OWASP/CWE/EU-AI-Act rules, plus an advisory warning before risky commands. Free, read-only.",
+      "version": "0.1.0",
+      "homepage": "https://agentsec.kernora.ai"
+    }
+  ]
+}
