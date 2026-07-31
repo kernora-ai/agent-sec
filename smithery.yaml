@@ -1,0 +1,4 @@
+# Smithery config — remote HTTP MCP server (no build/deploy needed)
+startCommand:
+  type: http
+  url: https://agentsec.kernora.ai/mcp

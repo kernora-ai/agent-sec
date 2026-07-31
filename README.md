@@ -1,5 +1,9 @@
 # Kernora Agent Security
 
+[![Add to Cursor](https://img.shields.io/badge/Add%20to-Cursor-000?logo=cursor)](cursor://anysphere.cursor-deeplink/mcp/install?name=agentsec&config=eyJ1cmwiOiAiaHR0cHM6Ly9hZ2VudHNlYy5rZXJub3JhLmFpL21jcCIsICJ0eXBlIjogImh0dHAifQ==) [![MCP](https://img.shields.io/badge/MCP-server-8b5cf6)](https://agentsec.kernora.ai/mcp) [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+
+
+
 **A zero-install security baseline for AI coding agents.** Point Claude Code, Cursor, or any
 MCP-capable agent at one URL and it reads a curated, cited security baseline every session (via a minimal JSON-RPC-over-HTTP MCP subset — works with Claude Code today) — so it
 stops shipping the mistakes that cause incidents (a hardcoded secret, a `curl | bash`, a
