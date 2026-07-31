@@ -1,0 +1,8 @@
+name = "agent-sec"
+main = "src/worker.js"
+compatibility_date = "2026-07-01"
+workers_dev = true
+
+# Self-host: `wrangler deploy` publishes to YOUR OWN <name>.<your-subdomain>.workers.dev.
+# To serve on a custom domain you control, add:
+#   routes = [{ pattern = "agentsec.example.com", custom_domain = true }]

@@ -1,0 +1,11 @@
+{
+  "name": "agent-sec",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Kernora Agent Security — zero-install security baseline for AI coding agents (Cloudflare Worker).",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test.mjs"
+  }
+}
