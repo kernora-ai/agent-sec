@@ -1,11 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.kernora-ai/agent-sec",
-  "description": "A zero-install security baseline for AI coding agents — cited OWASP/CWE/EU-AI-Act rules over MCP. Advisory grounding, free, read-only.",
-  "repository": { "url": "https://github.com/kernora-ai/agent-sec", "source": "github" },
+  "description": "Zero-install security baseline for AI coding agents \u2014 OWASP/CWE-cited rules over MCP.",
+  "repository": {
+    "url": "https://github.com/kernora-ai/agent-sec",
+    "source": "github"
+  },
   "version": "0.1.0",
   "websiteUrl": "https://agentsec.kernora.ai",
   "remotes": [
-    { "type": "streamable-http", "url": "https://agentsec.kernora.ai/mcp" }
+    {
+      "type": "streamable-http",
+      "url": "https://agentsec.kernora.ai/mcp"
+    }
   ]
 }
